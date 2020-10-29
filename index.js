@@ -51,4 +51,17 @@ app.post('/facebook', async(req, res) => {
     }
 });
 
+app.post('/other', async(req, res) => {
+    try {
+        const { url } = req.body;
+
+        const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
+        const page = await browser.newPage();
+
+        await page.goto(url, { waitUntil: 'networkidle2' });
+    } catch(err) {
+        res.status(400).json({ message: err.message });
+    }
+});
+
 app.listen(process.env.PORT || 5000, () => console.log(`Server listening on port ${process.env.PORT || 5000}`));
