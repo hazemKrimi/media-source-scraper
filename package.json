@@ -1,0 +1,31 @@
+{
+  "name": "media-source-scraper",
+  "version": "1.0.0",
+  "description": "An api that scrapes the source of media from a given url (Facebook, YouTube, Podcasts)",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hazemKrimi/media-source-scraper.git"
+  },
+  "keywords": [
+    "Puppeteer",
+    "API",
+    "express.js",
+    "Node.js"
+  ],
+  "author": "Hazem Krimi",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/hazemKrimi/media-source-scraper/issues"
+  },
+  "homepage": "https://github.com/hazemKrimi/media-source-scraper#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "puppeteer": "^5.4.1"
+  }
+}
