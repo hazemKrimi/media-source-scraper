@@ -11,7 +11,7 @@ app.post('/facebook', async(req, res) => {
     try {
         const { url } = req.body;
 
-        if (!url.match(/^(http(s)?:\/\/)?((w){3}.)?facebook?(\.com)?\/\S+\/videos\/\S+/)) throw new Error('Invalid url');
+        if (!/^(http(s)?:\/\/)?((w){3}.)?facebook?(\.com)?\/\S+\/videos\/\S+/.test(url)) throw new Error('Invalid url');
 
         const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
         const page = await browser.newPage();
