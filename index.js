@@ -169,6 +169,70 @@ app.post('/other', async(req, res) => {
         const page = await browser.newPage();
 
         await page.goto(url, { waitUntil: 'networkidle2' });
+
+        const audioHandle = await page.$('audio');
+
+        checkForAudio: if (audioHandle) {
+            const src = await page.evaluate(audio => audio.getAttribute('src'), audioHandle);
+
+            if (!src) break checkForAudio;
+
+            const title = src.split('/')[src.split('/').length - 1].split('.')[0];
+
+            await new Promise(() => {
+                ffmpeg.ffprobe(src, async(err, metaData) => {
+                    if (err) throw err;
+
+                    const duration = formatDurationString(
+                        new Date(Math.ceil(metaData.format.duration) * 1000).getUTCHours(),
+                        new Date(Math.ceil(metaData.format.duration) * 1000).getUTCMinutes(),
+                        new Date(Math.ceil(metaData.format.duration) * 1000).getSeconds()
+                    );
+
+                    const data = {
+                        type: 'other',
+                        link: src,
+                        title,
+                        duration
+                    };
+
+                    if (data) return res.json(data);
+                });
+            });
+        }
+
+        const videoHandle = await page.$('video');
+
+        checkForVideo: if (videoHandle) {
+            const src = await page.evaluate(video => video.getAttribute('src'), videoHandle);
+
+            if (!src) break checkForVideo;
+
+            const title = src.split('/')[src.split('/').length - 1].split('.')[0];
+
+            await new Promise(() => {
+                ffmpeg.ffprobe(src, async(err, metaData) => {
+                    if (err) throw err;
+
+                    const duration = formatDurationString(
+                        new Date(Math.ceil(metaData.format.duration) * 1000).getUTCHours(),
+                        new Date(Math.ceil(metaData.format.duration) * 1000).getUTCMinutes(),
+                        new Date(Math.ceil(metaData.format.duration) * 1000).getSeconds()
+                    );
+
+                    const data = {
+                        type: 'other',
+                        link: src,
+                        title,
+                        duration
+                    };
+
+                    if (data) return res.json(data);
+                });
+            });
+        }
+
+        return res.status(404).json({ message: 'Nothing found' });
     } catch(err) {
         res.status(500).json({ message: err.message });
     }
