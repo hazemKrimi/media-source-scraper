@@ -11,12 +11,13 @@ app.post('/facebook', async(req, res) => {
     try {
         const { url } = req.body;
 
-        if (!/^(http(s)?:\/\/)?((w){3}.)?facebook?(\.com)?\/\S+\/videos\/\S+/.test(url)) throw new Error('Invalid url');
+        if (!/^(http(s)?:\/\/)?((w){3}.)?facebook?(\.com)?\/\S+\/videos\/\S+/.test(url)) return res.status(400).json({ message: 'Invalid URL' });
 
+        const link = url.match(/^(http(s)?:\/\/)?((w){3}.)?facebook?(\.com)?\/\S+\/videos\/\S+/)[0];
         const browser = await puppeteer.launch({ args: ['--no-sandbox'] });
         const page = await browser.newPage();
 
-        await page.goto(url, { waitUntil: 'networkidle2' });
+        await page.goto(link, { waitUntil: 'networkidle2' });
 
         const titleHandle = await page.$('title');
         const metaHandle = await page.$('meta[property="og:video:url"]');
@@ -47,7 +48,7 @@ app.post('/facebook', async(req, res) => {
 
         res.json(data);
     } catch(err) {
-        res.status(400).json({ message: err.message });
+        res.status(500).json({ message: err.message });
     }
 });
 
@@ -60,7 +61,7 @@ app.post('/other', async(req, res) => {
 
         await page.goto(url, { waitUntil: 'networkidle2' });
     } catch(err) {
-        res.status(400).json({ message: err.message });
+        res.status(500).json({ message: err.message });
     }
 });
 
